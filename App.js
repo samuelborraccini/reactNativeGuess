@@ -6,7 +6,6 @@ import {
   Text,
   View,
 } from "react-native";
-import MainButton from "./components/ui/MainButton";
 import StartGame from "./screens/StartGame";
 import { LinearGradient } from "expo-linear-gradient";
 import { useState } from "react";
@@ -14,7 +13,6 @@ import GameScreen from "./screens/GameScreen";
 import COLORS from "./constants/colors";
 import GameOver from "./screens/GameOver";
 import { useFonts } from "expo-font";
-import AppLoading from "expo-app-loading";
 export default function App() {
   const [fontsLoaded] = useFonts({
     "open-sans": require("./assets/fonts/OpenSans-Regular.ttf"),
@@ -47,22 +45,25 @@ export default function App() {
     );
   }
   if (!fontsLoaded) {
-    return <AppLoading />;
+    return <Text>Loading Fonts...</Text>;
   }
   return (
-    <LinearGradient
-      style={styles.rootScreen}
-      colors={[COLORS.primary800, COLORS.accent]}
-    >
-      <ImageBackground
-        source={require("./assets/images/background.png")}
-        resizeMode="cover"
+    <>
+      <StatusBar style="light" />
+      <LinearGradient
         style={styles.rootScreen}
-        imageStyle={styles.backgroundImage}
+        colors={[COLORS.primary800, COLORS.accent]}
       >
-        <SafeAreaView style={styles.rootScreen}>{screen}</SafeAreaView>
-      </ImageBackground>
-    </LinearGradient>
+        <ImageBackground
+          source={require("./assets/images/background.png")}
+          resizeMode="cover"
+          style={styles.rootScreen}
+          imageStyle={styles.backgroundImage}
+        >
+          <SafeAreaView style={styles.rootScreen}>{screen}</SafeAreaView>
+        </ImageBackground>
+      </LinearGradient>
+    </>
   );
 }
 

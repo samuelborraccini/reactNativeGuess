@@ -5,6 +5,7 @@ import {
   SafeAreaView,
   Alert,
   FlatList,
+  useWindowDimensions,
 } from "react-native";
 import React, { useEffect, useState } from "react";
 import Title from "../components/ui/Title";
@@ -32,6 +33,7 @@ const GameScreen = ({ userNumber, setGameOver, setRounds }) => {
   const initialGuess = generateRandomBetween(0, 100, userNumber);
   const [guessNumber, setGuessNumber] = useState(initialGuess);
   const [history, sethistory] = useState([]);
+  const { height, width } = useWindowDimensions();
   const nextGuessHandler = (direction) => {
     if (
       (direction === "lower" && guessNumber < userNumber) ||
@@ -60,9 +62,8 @@ const GameScreen = ({ userNumber, setGameOver, setRounds }) => {
     maxBoundry = 100;
   }, []);
 
-  return (
-    <View style={styles.screen}>
-      <Title title={"Oponent's Guess"} />
+  let content = (
+    <>
       <NumberContainer>{guessNumber}</NumberContainer>
       <Card>
         <InstructionsText style={styles.instructionText}>
@@ -81,12 +82,37 @@ const GameScreen = ({ userNumber, setGameOver, setRounds }) => {
           </View>
         </View>
       </Card>
+    </>
+  );
+  if (width > 600) {
+    content = (
+      <>
+        <View style={styles.buttonsContainerWide}>
+          <View style={styles.buttonContainer}>
+            <MainButton onPress={() => nextGuessHandler("lower")}>
+              <Ionicons name="remove" size={24} color="white" />
+            </MainButton>
+          </View>
+          <NumberContainer>{guessNumber}</NumberContainer>
+          <View style={styles.buttonContainer}>
+            <MainButton onPress={() => nextGuessHandler("higher")}>
+              <Ionicons name="add" size={24} color="white" />
+            </MainButton>
+          </View>
+        </View>
+      </>
+    );
+  }
+  return (
+    <View style={styles.screen}>
+      <Title title={"Oponent's Guess"} />
+      {content}
       <View style={styles.listContainer}>
         <FlatList
           data={history}
           renderItem={({ item, index }) => (
             <ListItem>
-              Intento #{index + 1}: el valor adivinado fue {item}
+              Try #{index + 1}: oponnet's guess {item}
             </ListItem>
           )}
           keyExtractor={(item) => item}
@@ -103,6 +129,7 @@ const styles = StyleSheet.create({
   screen: {
     flex: 1,
     padding: 24,
+    alignItems: "center",
   },
   buttonsContainer: {
     flexDirection: "row",
@@ -116,5 +143,9 @@ const styles = StyleSheet.create({
   listContainer: {
     flex: 1,
     padding: 12,
+  },
+  buttonsContainerWide: {
+    flexDirection: "row",
+    alignItems: "center",
   },
 });
